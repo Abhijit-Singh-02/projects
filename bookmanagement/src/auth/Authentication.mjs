@@ -1,3 +1,5 @@
+// This module was implemented by my friend Amlan Das Karmakar 
+// I only integrated it into the project
 import jwt from "jsonwebtoken";
 import config from "../../config.mjs";
 

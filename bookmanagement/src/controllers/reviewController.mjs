@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import reviewModel from "../models/reviewModel.mjs";
-import bookModel from "../models/bookModel.mjs";
+import bookModel from "../models/bookModels.mjs";
 const createReview = async (req, res)=>{
     try {
         let {bookId} = req.params;
