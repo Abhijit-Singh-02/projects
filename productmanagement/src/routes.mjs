@@ -2,6 +2,7 @@ import express from "express";
 import upload from "./config/multer.mjs";
 import {createProduct,getProducts,getProductById,updateProduct,deleteProduct,} from "./controllers/productController.mjs";
 import {createOrder,updateOrder} from "./controllers/orderController.mjs"
+import { addToCart } from "./controllers/cartController.mjs";
 const router = express.Router();
 router.post('/login', usersController.login);
 router.post('/register', usersController.register);
@@ -14,4 +15,7 @@ router.put("/products/:productId", updateProduct);
 router.delete("/products/:productId", deleteProduct);
 router.post("/users/:userId/orders", createOrder)
 router.put("/users/:userId/orders", updateOrder)
+
+router.post('/users/:userId/cart', addToCart);
+
 export default router;
