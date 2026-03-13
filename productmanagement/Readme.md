@@ -1,3 +1,8 @@
+## Work distribution
+- Amlan: User Api, Authentication, Authorization
+- Abhijit: Cart Api, Product image upload
+- Deewas:  Order, Products Api
+
 ## Project - Products Management
 
 ### Key points

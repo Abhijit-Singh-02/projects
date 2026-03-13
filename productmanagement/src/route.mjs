@@ -25,9 +25,9 @@ router.post("/users/:userId/orders", createOrder)
 router.put("/users/:userId/orders", updateOrder)
 
 // Cart Routes
-router.get('/users/:userId/cart', getCart);
-router.post('/users/:userId/cart', addToCart);
-router.put('/users/:userId/cart', updateCart);
-router.delete('/users/:userId/cart', deleteCart);
+router.get('/users/:userId/cart', verifyToken, getCart);
+router.post('/users/:userId/cart', verifyToken, addToCart);
+router.put('/users/:userId/cart', verifyToken, updateCart);
+router.delete('/users/:userId/cart', verifyToken, deleteCart);
 
 export default router;
