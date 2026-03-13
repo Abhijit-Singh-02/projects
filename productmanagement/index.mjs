@@ -1,20 +1,22 @@
-import express from "express";
-import dotenv from "dotenv";
-import { connectDB } from "./src/config/db.mjs";
-import routes from "./src/routes.mjs";
-
-dotenv.config();
-
+import express from 'express';
+import mongoose from 'mongoose';
+import config from './config.mjs';
+import router from './src/route.mjs';
+import multer from 'multer'
 const app = express();
-
+app.use(multer().any());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-connectDB();
+mongoose.connect(config.mongoURI)
+    .then(()=>{
+        console.log("database connected");
+    })
+    .catch((err)=>{
+        console.log("connection error", err);
+    });
 
-app.use("/", routes);
-
-const PORT = process.env.PORT || 8080;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.use('/', router);
+app.listen(config.port || 8080, ()=>{
+    console.log(`server started at port ${config.port || 8080}`);
 });

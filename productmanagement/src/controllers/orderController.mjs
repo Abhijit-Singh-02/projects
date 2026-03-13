@@ -1,14 +1,14 @@
 import Order from "../models/orderModel.mjs"
-import Cart from "../models/cartModel.mjs"
-import User from "../models/userModel.mjs"
+import cartModel from "../models/cartModel.mjs"
+import userModel from "../models/userModel.mjs"
 const createOrder = async (req, res) => {
   try {
     const { userId } = req.params
-    const user = await User.findById(userId)
+    const user = await userModel.findById(userId)
     if (!user) {
       return res.status(404).send({status: false,message: "User not found"})
     }
-    const cart = await Cart.findOne({ userId })
+    const cart = await cartModel.findOne({ userId })
     if (!cart || cart.items.length === 0) {
       return res.status(400).send({status: false,message: "Cart is empty"})
     }

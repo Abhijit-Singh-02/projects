@@ -7,10 +7,10 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import config from '../../config.mjs';
 
 const s3 = new S3Client({
-    region: config.aws.region,
+    region: config.region,
     credentials: {
-        accessKeyId: config.aws.accessKeyId,
-        secretAccessKey: config.aws.secretAccessKey
+        accessKeyId: config.accessKey,
+        secretAccessKey: config.secretAccessKey
     }
 });
 
@@ -27,8 +27,8 @@ const getS3ObjectKey = (profileImageValue) => {
             return null;
         }
 
-        if (path.startsWith(`${config.aws.bucketName}/`)) {
-            return path.slice(config.aws.bucketName.length + 1);
+        if (path.startsWith(`${config.bucketName}/`)) {
+            return path.slice(config.bucketName.length + 1);
         }
 
         return path;
@@ -140,11 +140,12 @@ userSchema.post('findOne', async function (doc) {
     doc.profileImage = await getSignedUrl(
         s3,
         new GetObjectCommand({
-            Bucket: config.aws.bucketName,
+            Bucket: config.bucketName,
             Key: objectKey
         }),
         { expiresIn: 3600 }
     );
 });
 
-export default mongoose.model('User', userSchema);
+const userModel = mongoose.model('users', userSchema);
+export default userModel;

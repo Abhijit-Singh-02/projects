@@ -1,25 +1,25 @@
 // This module was implemented by my friend Amlan Das Karmakar
 // I only integrated it into the project
-import User from '../models/userModel.mjs';
+import userModel from '../models/userModel.mjs';
 import bcrypt from 'bcrypt';
 import { S3Client } from '@aws-sdk/client-s3';
-import config from '../../config.mjs';
+import config from '../../config.mjs'
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import { generateToken } from '../auth/authentication.mjs';
 
 const s3 = new S3Client({
-    region: config.aws.region,
+    region: config.region,
     credentials: {
-        accessKeyId: config.aws.accessKeyId,
-        secretAccessKey: config.aws.secretAccessKey
+        accessKeyId: config.accessKey,
+        secretAccessKey: config.secretAccessKey
     }
 });
 
 const upload = multer({
     storage: multerS3({
         s3,
-        bucket: config.aws.bucketName,
+        bucket: config.bucketName,
         contentType: multerS3.AUTO_CONTENT_TYPE,
         key: (req, file, cb) => {
             cb(null, `profile-pictures/${Date.now()}-${file.originalname}`);
@@ -50,7 +50,7 @@ const register = async (req, res) => {
             req.body.profileImage = uploadedImage.location;
         }
         
-        const user = await User.create(req.body);
+        const user = await userModel.create(req.body);
         res.status(201).json({
             status: true,
             message: 'User registered successfully',
@@ -67,7 +67,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email }).select('+password');
+        const user = await userModel.findOne({ email }).select('+password');
 
         if (!user) {
             return res.status(404).json({
@@ -111,7 +111,7 @@ const getProfile = async (req, res) => {
             });
         }
 
-        const user = await User.findById(userId).select('+password');
+        const user = await userModel.findById(userId).select('+password');
 
         if (!user) {
             return res.status(404).json({
@@ -162,7 +162,7 @@ const updateProfile = async (req, res) => {
             }
         }
 
-        const user = await User.findByIdAndUpdate(userId, updates, { returnDocument: 'after' });
+        const user = await userModel.findByIdAndUpdate(userId, updates, { returnDocument: 'after' });
 
         res.status(200).json({
             status: true,

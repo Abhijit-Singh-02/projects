@@ -1,14 +1,20 @@
-import Product from "../models/productModel.mjs";
+import productModel from "../models/productModel.mjs";
+import uploadFile from "../aws/uploadFile.mjs";
 
 export const createProduct = async (req, res) => {
   try {
     const data = req.body;
-
-    if (req.file) {
-      data.productImage = req.file.path;
+    const files = req.files;
+    if(!files || files.length===0){
+        return res.status(400).send({message: "failed", error: "Image is required"});
     }
-
-    const product = await Product.create(data);
+    const image= await uploadFile(files[0]);
+    if(!image){
+        return res.status(500).send({message: "failed", error: "failed to upload image"})
+    }
+      
+    data.productImage = image;
+    const product = await productModel.create(data);
 
     res.status(201).send({
       status: true,
@@ -48,7 +54,7 @@ export const getProducts = async (req, res) => {
       sort.price = query.priceSort;
     }
 
-    const products = await Product.find(filter).sort(sort);
+    const products = await productModel.find(filter).sort(sort);
 
     res.status(200).send({
       status: true,message: "Products fetched",data: products,});
@@ -59,7 +65,7 @@ export const getProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   try {
-    const product = await Product.findOne({_id: req.params.productId,isDeleted: false,});
+    const product = await productModel.findOne({_id: req.params.productId,isDeleted: false,});
 
     if (!product) {
       return res.status(404).send({status: false,message: "Product not found",});
@@ -71,7 +77,7 @@ export const getProductById = async (req, res) => {
 };
 export const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findOneAndUpdate(
+    const product = await productModel.findOneAndUpdate(
       { _id: req.params.productId, isDeleted: false },
       req.body,
       { new: true },
@@ -87,7 +93,7 @@ export const updateProduct = async (req, res) => {
 };
 export const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findOneAndUpdate(
+    const product = await productModel.findOneAndUpdate(
       { _id: req.params.productId, isDeleted: false },
       { isDeleted: true, deletedAt: new Date() },
     );
