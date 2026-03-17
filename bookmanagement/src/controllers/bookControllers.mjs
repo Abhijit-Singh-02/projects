@@ -9,16 +9,17 @@ import config from '../../config.mjs';
 
 const s3 = new S3Client({
     credentials: {
-        accessKeyId: config.aws.accessKeyId,
-        secretAccessKey: config.aws.secretAccessKey
+        accessKeyId: config.accessKey,
+        secretAccessKey: config.secretAccessKey,
+        bucket: config.bucketName
     },
-    region: config.aws.region
+    region: config.region
 });
 
 const upload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: config.aws.bucketName,
+        bucket: config.bucketName,
         key: (req, file, cb) => {
             cb(null, `books/${Date.now()}-${file.originalname}`);
         }

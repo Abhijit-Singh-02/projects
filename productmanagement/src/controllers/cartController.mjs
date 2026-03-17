@@ -55,7 +55,7 @@ const addToCart = async (req, res)=>{
             data.totalPrice = product.price*qty;
             data.totalItems = qty;
             
-            const newCart = await cartModel.create(data);
+            const newCart = await cartModel.create(data).populate("items.productId");
 
             if(newCart==null){
                 return res.status(500).send({status: false, message:"failed"});
@@ -64,10 +64,10 @@ const addToCart = async (req, res)=>{
             return res.status(201).send({status: true, message:"Success", data: newCart})
         }
         
-        cart = await cartModel.findOneAndUpdate({_id: cartId,userId, "items.productId": productId}, {$inc:{"items.$.quantity": qty, totalItems: qty, totalPrice: (product.price*qty)}},{new: true})
+        cart = await cartModel.findOneAndUpdate({_id: cartId,userId, "items.productId": productId}, {$inc:{"items.$.quantity": qty, totalItems: qty, totalPrice: (product.price*qty)}},{new: true}).populate("items.productId");
         
         if(cart==null){
-            cart = await cartModel.findOneAndUpdate({_id: cartId,userId}, {$push:{items: {productId, quantity: qty}}, $inc:{totalItems: qty, totalPrice: (product.price*qty)}},{new: true})
+            cart = await cartModel.findOneAndUpdate({_id: cartId,userId}, {$push:{items: {productId, quantity: qty}}, $inc:{totalItems: qty, totalPrice: (product.price*qty)}},{new: true}).populate("items.productId");
         }
 
         return res.status(200).send({status: true, message: "Success", data: cart});
@@ -112,20 +112,20 @@ const updateCart = async (req, res)=>{
 
         let newCart;
         if(Number(removeProduct)===0){
-            newCart=await cartModel.findOneAndUpdate({_id: cartId},{$pull:{items:{productId}}, $inc:{totalItems: -item.quantity, totalPrice: -(product.price*item.quantity)}},{new: true});
+            newCart=await cartModel.findOneAndUpdate({_id: cartId},{$pull:{items:{productId}}, $inc:{totalItems: -item.quantity, totalPrice: -(product.price*item.quantity)}},{new: true}).populate("items.productId");
 
             return res.status(200).send({status: true, message: "Product removed  successfully"});
         }
         else{
             if(item.quantity==1){
-                newCart=await cartModel.findOneAndUpdate({_id: cartId},{$pull:{items:{productId}}, $inc:{totalItems: -1, totalPrice: -product.price}},{new: true});
+                newCart=await cartModel.findOneAndUpdate({_id: cartId},{$pull:{items:{productId}}, $inc:{totalItems: -1, totalPrice: -product.price}},{new: true}).populate("items.productId");
             }
             else{
-                newCart=await cartModel.findOneAndUpdate({_id: cartId, "items.productId": productId},{$inc:{"items.$.quantity": -1,totalItems: -1, totalPrice: -product.price}},{new: true});
+                newCart=await cartModel.findOneAndUpdate({_id: cartId, "items.productId": productId},{$inc:{"items.$.quantity": -1,totalItems: -1, totalPrice: -product.price}},{new: true}).populate("items.productId");
             }
         }
         
-        if(!newCart){
+        if(newCart==null){
             return res.status(500).send({status: false, message: "failed"})
         }
         return res.status(200).send({status: true, message: "Product removed successfully", data: newCart})

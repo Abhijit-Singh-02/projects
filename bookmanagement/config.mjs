@@ -9,7 +9,8 @@ const config = {
     JWTsecretToken: process.env.JWT_secretToken,
     accessKey: process.env.accessKey,
     secretAccessKey: process.env.secretAccessKey,
-    region: process.env.region
+    region: process.env.region,
+    bucketName: process.env.bucketName
 };
 
 export default config;
