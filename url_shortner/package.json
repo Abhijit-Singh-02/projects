@@ -1,0 +1,29 @@
+{
+  "name": "url_shorner",
+  "version": "1.0.0",
+  "description": "backend of url shortner",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhijit-Singh-02/projects.git"
+  },
+  "keywords": [
+    "url",
+    "shortner"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abhijit-Singh-02/projects/issues"
+  },
+  "homepage": "https://github.com/Abhijit-Singh-02/projects#readme",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.1",
+    "redis": "^5.11.0"
+  }
+}
